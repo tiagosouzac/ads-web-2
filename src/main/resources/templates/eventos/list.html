@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="pt-BR" xmlns:th="http://www.thymeleaf.org">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Eventos</title>
+  </head>
+  <body>
+    <h1>Lista de Eventos</h1>
+
+    <div th:if="${mensagem}" style="color: green; margin: 10px 0">
+      <p th:text="${mensagem}"></p>
+    </div>
+
+    <div th:if="${erro}" style="color: red; margin: 10px 0">
+      <p th:text="${erro}"></p>
+    </div>
+
+    <div style="margin: 20px 0">
+      <a href="/eventos/novo">Novo Evento</a>
+    </div>
+
+    <table border="1" style="border-collapse: collapse; width: 100%">
+      <thead>
+        <tr>
+          <th>ID</th>
+          <th>Nome</th>
+          <th>Descrição</th>
+          <th>Data</th>
+          <th>Preço</th>
+          <th>Local</th>
+          <th>Restrição de Idade</th>
+          <th>Ações</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr th:each="evento : ${eventos}">
+          <td th:text="${evento.id}"></td>
+          <td th:text="${evento.nome}"></td>
+          <td th:text="${evento.descricao}"></td>
+          <td th:text="${#temporals.format(evento.data, 'dd/MM/yyyy')}"></td>
+          <td th:text="${#numbers.formatCurrency(evento.preco)}"></td>
+          <td th:text="${evento.local}"></td>
+          <td
+            th:text="${evento.restricaoIdade != null ? evento.restricaoIdade + ' anos' : 'Livre'}"
+          ></td>
+          <td>
+            <a th:href="@{/eventos/editar/{id}(id=${evento.id})}">Editar</a>
+            |
+            <a
+              th:href="@{/eventos/excluir/{id}(id=${evento.id})}"
+              onclick="return confirm('Tem certeza que deseja excluir este evento?')"
+              >Excluir</a
+            >
+          </td>
+        </tr>
+      </tbody>
+    </table>
+
+    <div th:if="${#lists.isEmpty(eventos)}" style="margin: 20px 0">
+      <p>Nenhum evento encontrado.</p>
+    </div>
+  </body>
+</html>

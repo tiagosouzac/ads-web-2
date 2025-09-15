@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html lang="pt-BR" xmlns:th="http://www.thymeleaf.org">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Evento</title>
+  </head>
+  <body>
+    <h1 th:text="${evento.id != null ? 'Editar Evento' : 'Novo Evento'}"></h1>
+
+    <form th:action="@{/eventos/salvar}" th:object="${evento}" method="post">
+      <input type="hidden" th:field="*{id}" />
+
+      <div style="margin: 10px 0">
+        <label for="nome">Nome:</label><br />
+        <input
+          type="text"
+          th:field="*{nome}"
+          id="nome"
+          required
+          style="width: 300px"
+        />
+      </div>
+
+      <div style="margin: 10px 0">
+        <label for="descricao">Descrição:</label><br />
+        <textarea
+          th:field="*{descricao}"
+          id="descricao"
+          rows="4"
+          cols="50"
+        ></textarea>
+      </div>
+
+      <div style="margin: 10px 0">
+        <label for="data">Data:</label><br />
+        <input type="date" th:field="*{data}" id="data" required />
+      </div>
+
+      <div style="margin: 10px 0">
+        <label for="preco">Preço:</label><br />
+        <input
+          type="number"
+          th:field="*{preco}"
+          id="preco"
+          step="0.01"
+          min="0"
+          required
+          style="width: 150px"
+        />
+      </div>
+
+      <div style="margin: 10px 0">
+        <label for="local">Local:</label><br />
+        <input
+          type="text"
+          th:field="*{local}"
+          id="local"
+          required
+          style="width: 300px"
+        />
+      </div>
+
+      <div style="margin: 10px 0">
+        <label for="restricaoIdade">Restrição de Idade:</label><br />
+        <input
+          type="number"
+          th:field="*{restricaoIdade}"
+          id="restricaoIdade"
+          min="0"
+          max="99"
+          style="width: 100px"
+        />
+        <small>(Deixe em branco se for livre para todas as idades)</small>
+      </div>
+
+      <div style="margin: 20px 0">
+        <button type="submit">Salvar</button>
+        <a href="/eventos" style="margin-left: 10px">Cancelar</a>
+      </div>
+    </form>
+  </body>
+</html>
