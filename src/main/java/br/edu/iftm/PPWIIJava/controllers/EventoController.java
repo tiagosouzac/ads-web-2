@@ -1,7 +1,7 @@
 package br.edu.iftm.PPWIIJava.controllers;
 
 import br.edu.iftm.PPWIIJava.entities.Evento;
-import br.edu.iftm.PPWIIJava.repositories.EventoRepository;
+import br.edu.iftm.PPWIIJava.services.EventoService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -15,11 +15,11 @@ import java.util.Optional;
 public class EventoController {
 
     @Autowired
-    private EventoRepository eventoRepository;
+    private EventoService eventoService;
 
     @GetMapping
     public String listarEventos(Model model) {
-        model.addAttribute("eventos", eventoRepository.findAll());
+        model.addAttribute("eventos", eventoService.listarTodos());
         return "eventos/list";
     }
 
@@ -31,7 +31,8 @@ public class EventoController {
 
     @GetMapping("/editar/{id}")
     public String editarEvento(@PathVariable("id") Long id, Model model) {
-        Optional<Evento> evento = eventoRepository.findById(id);
+        Optional<Evento> evento = eventoService.buscarPorId(id);
+
         if (evento.isPresent()) {
             model.addAttribute("evento", evento.get());
             return "eventos/form";
@@ -43,10 +44,10 @@ public class EventoController {
     @PostMapping("/salvar")
     public String salvarEvento(@ModelAttribute Evento evento, RedirectAttributes redirectAttributes) {
         try {
-            eventoRepository.save(evento);
+            eventoService.salvar(evento);
             redirectAttributes.addFlashAttribute("mensagem", "Evento salvo com sucesso!");
-        } catch (Exception e) {
-            redirectAttributes.addFlashAttribute("erro", "Erro ao salvar evento: " + e.getMessage());
+        } catch (RuntimeException e) {
+            redirectAttributes.addFlashAttribute("erro", e.getMessage());
         }
         return "redirect:/eventos";
     }
@@ -54,10 +55,10 @@ public class EventoController {
     @GetMapping("/excluir/{id}")
     public String excluirEvento(@PathVariable("id") Long id, RedirectAttributes redirectAttributes) {
         try {
-            eventoRepository.deleteById(id);
+            eventoService.excluir(id);
             redirectAttributes.addFlashAttribute("mensagem", "Evento excluído com sucesso!");
-        } catch (Exception e) {
-            redirectAttributes.addFlashAttribute("erro", "Erro ao excluir evento: " + e.getMessage());
+        } catch (RuntimeException e) {
+            redirectAttributes.addFlashAttribute("erro", e.getMessage());
         }
         return "redirect:/eventos";
     }
